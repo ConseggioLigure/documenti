@@ -1,0 +1,881 @@
+{
+  "dpi": 300,
+  "pillow": "11.3.0",
+  "inputs": {
+    "LigurianScans/manifest.json": "21d08e3ff25264b8dba94d3e8436d19f6e5ce851d5933b35c3cc65685c6ac728",
+    "LigurianKB/exports/manifest.json": "f1f0480f0792e965c27fa4b748cf97a9042d0b4f6fb3a3a59df5f160ebc25b5b",
+    "LigurianKB/processing/paganini/illustrations.json": "1a4fb7581fca5c28bd68eb81efe324511090c3b3a1de7991e5942c6c773190c1",
+    "LigurianKB/processing/paganini/scan-assets.json": "83ffc266e467ae698488eaa26ba83c6298212da435e0604c26e4c2f173cc30d3",
+    "LigurianKB/exports/casaccia.jsonl": "76a032d7ab2aceed25cd6bb43b079353d806325ec49dfc37b942b10a00da40a2",
+    "LigurianKB/exports/frisoni.jsonl": "92d69b431d3de261ef652b9f1ecfbf935a8ee2153a9bf96cd76506dd6925748d",
+    "LigurianKB/exports/paganini.jsonl": "b7b73481740aebc742b87485f0290acb9445585af54579abef31a2e1705a9c81"
+  },
+  "pages": {
+    "casaccia-1876/pagine/7.png": {
+      "sha256": "068a9bb7847abde7c7bc55ed4c78624b085fa1e12844e1f27af34cca2c1e501d",
+      "pdf": "casaccia-1876.pdf",
+      "pdf_page": 14
+    },
+    "casaccia-1876/pagine/839.png": {
+      "sha256": "b1038170247cfa485d9e8b78592acf417b7086b5ce717b66ea1f3671f89d2f37",
+      "pdf": "casaccia-1876.pdf",
+      "pdf_page": 846
+    },
+    "casaccia-1876/pagine/8.png": {
+      "sha256": "83ee1b48f8393b254dac82b0e8c39ca542a4eca7faf11e07be451d39e88cf81d",
+      "pdf": "casaccia-1876.pdf",
+      "pdf_page": 15
+    },
+    "frisoni-1910/pagine/139.png": {
+      "sha256": "af4ce75f9cd05cf5ee9c19434a1121c808f86710508079d9471f7cf4631eadf0",
+      "pdf": "frisoni-1910-genovese-italiano.pdf",
+      "pdf_page": 140
+    },
+    "frisoni-1910/pagine/4.png": {
+      "sha256": "3bb33d6ddf536579d3bae81e7813c095636de3f84a86e3bf8a585f35eceee583",
+      "pdf": "frisoni-1910-genovese-italiano.pdf",
+      "pdf_page": 5
+    },
+    "frisoni-1910/pagine/311.png": {
+      "sha256": "3d3e12e20252006f517fbee6379b8ef7bba0a9989b0ca7664c20235465213791",
+      "pdf": "frisoni-1910-italiano-genovese.pdf",
+      "pdf_page": 1
+    },
+    "paganini-1857/pagine/5.png": {
+      "sha256": "9891e8e24796b6b2bb55186a2c23579f99beedb250908238f9624192f10057af",
+      "pdf": "paganini-1857.pdf",
+      "pdf_page": 9
+    },
+    "paganini-1857/pagine/6.png": {
+      "sha256": "78688b5580b13c4b64978bc0a6300934d4a2df8ec90000c5224051ad1a026295",
+      "pdf": "paganini-1857.pdf",
+      "pdf_page": 10
+    },
+    "paganini-1857/pagine/tavola-1.png": {
+      "sha256": "609efcbf19c8b37eb4b22475765804798d05bfa49f7a5e01c3fe7a7bce7c8e6c",
+      "pdf": "paganini-1857.pdf",
+      "pdf_page": 306
+    },
+    "paganini-1857/pagine/8.png": {
+      "sha256": "41bc849eb4eaf883a115226ae77d61ac3814e8bd46e6855c43f650edd67c7462",
+      "pdf": "paganini-1857.pdf",
+      "pdf_page": 12
+    }
+  },
+  "entries": [
+    {
+      "document": "casaccia-1876",
+      "section": "main_dictionary",
+      "entry_id": "abbiscâ.1",
+      "headwords": [
+        "abbiscâ"
+      ],
+      "lemma_index": 1,
+      "locations": {
+        "/source_locations": {
+          "page_range": [
+            7
+          ],
+          "column_range": [
+            "L"
+          ],
+          "images": [
+            {
+              "index": 1,
+              "page": 7,
+              "column": "L"
+            }
+          ]
+        },
+        "/content/casaccia/senses/0/0/source_locations": {
+          "page_range": [
+            7
+          ],
+          "column_range": [
+            "L"
+          ],
+          "images": [
+            {
+              "index": 1,
+              "page": 7,
+              "column": "L"
+            }
+          ]
+        }
+      },
+      "images": [
+        {
+          "path": "casaccia-1876/main_dictionary/abbiscâ.1/1.png",
+          "page_image": "casaccia-1876/pagine/7.png",
+          "box": [
+            144,
+            1555,
+            556,
+            1588
+          ],
+          "sha256": "2459345031a0aa095efd65bd382dfd3ee194b9d3a2925f2960190be414d13780"
+        }
+      ],
+      "image_count": 1
+    },
+    {
+      "document": "casaccia-1876",
+      "section": "main_dictionary",
+      "entry_id": "vivûssâ.1",
+      "headwords": [
+        "vivûssâ"
+      ],
+      "lemma_index": 1,
+      "locations": {
+        "/source_locations": {
+          "page_range": [
+            839
+          ],
+          "column_range": [
+            "L"
+          ],
+          "images": [
+            {
+              "index": 1,
+              "page": 839,
+              "column": "L"
+            }
+          ]
+        },
+        "/content/casaccia/senses/0/0/source_locations": {
+          "page_range": [
+            839
+          ],
+          "column_range": [
+            "L"
+          ],
+          "images": [
+            {
+              "index": 1,
+              "page": 839,
+              "column": "L"
+            }
+          ]
+        }
+      },
+      "images": [
+        {
+          "path": "casaccia-1876/main_dictionary/vivûssâ.1/1.png",
+          "page_image": "casaccia-1876/pagine/839.png",
+          "box": [
+            164,
+            1244,
+            937,
+            1356
+          ],
+          "sha256": "46eac2ca46f4efacbe9df29ac403831db71c74a5092e9151b5bad15ddc20fea0"
+        }
+      ],
+      "image_count": 1
+    },
+    {
+      "document": "casaccia-1876",
+      "section": "main_dictionary",
+      "entry_id": "abdicazion.1",
+      "headwords": [
+        "abdicazion"
+      ],
+      "lemma_index": 1,
+      "locations": {
+        "/source_locations": {
+          "page_range": [
+            8
+          ],
+          "column_range": [
+            "R"
+          ],
+          "images": [
+            {
+              "index": 1,
+              "page": 8,
+              "column": "R"
+            },
+            {
+              "index": 2,
+              "page": 8,
+              "column": "R"
+            }
+          ]
+        },
+        "/content/casaccia/senses/0/0/source_locations": {
+          "page_range": [
+            8
+          ],
+          "column_range": [
+            "R"
+          ],
+          "images": [
+            {
+              "index": 1,
+              "page": 8,
+              "column": "R"
+            },
+            {
+              "index": 2,
+              "page": 8,
+              "column": "R"
+            }
+          ]
+        }
+      },
+      "images": [
+        {
+          "path": "casaccia-1876/main_dictionary/abdicazion.1/1.png",
+          "page_image": "casaccia-1876/pagine/8.png",
+          "box": [
+            1090,
+            639,
+            1841,
+            675
+          ],
+          "sha256": "3fd4a17f33628434946efcbf4643ddedd63662cbd80e8adbd4dc60eba4178b61"
+        },
+        {
+          "path": "casaccia-1876/main_dictionary/abdicazion.1/2.png",
+          "page_image": "casaccia-1876/pagine/8.png",
+          "box": [
+            1145,
+            676,
+            1540,
+            713
+          ],
+          "sha256": "99c653347c4ebd9d53b791b2c8f2c551cf85b81dc200fa9b8bda9592eb50c974"
+        }
+      ],
+      "image_count": 2
+    },
+    {
+      "document": "frisoni-1910",
+      "section": "genovese_italiano",
+      "entry_id": "guardia.1",
+      "headwords": [
+        "guardia"
+      ],
+      "lemma_index": 1,
+      "locations": {
+        "/source_locations": {
+          "page_range": [
+            139
+          ],
+          "column_range": [
+            "L"
+          ],
+          "images": [
+            {
+              "index": 1,
+              "page": 139,
+              "column": "L"
+            }
+          ]
+        },
+        "/content/frisoni/senses/0/0/source_locations": {
+          "page_range": [
+            139
+          ],
+          "column_range": [
+            "L"
+          ],
+          "images": [
+            {
+              "index": 2,
+              "page": 139,
+              "column": "L"
+            }
+          ]
+        },
+        "/content/frisoni/senses/1/0/source_locations": {
+          "page_range": [
+            139
+          ],
+          "column_range": [
+            "L"
+          ],
+          "images": [
+            {
+              "index": 3,
+              "page": 139,
+              "column": "L"
+            },
+            {
+              "index": 4,
+              "page": 139,
+              "column": "L"
+            }
+          ]
+        },
+        "/content/frisoni/senses/2/0/source_locations": {
+          "page_range": [
+            139
+          ],
+          "column_range": [
+            "L"
+          ],
+          "images": [
+            {
+              "index": 5,
+              "page": 139,
+              "column": "L"
+            },
+            {
+              "index": 6,
+              "page": 139,
+              "column": "L"
+            }
+          ]
+        },
+        "/content/frisoni/senses/3/0/source_locations": {
+          "page_range": [
+            139
+          ],
+          "column_range": [
+            "L"
+          ],
+          "images": [
+            {
+              "index": 7,
+              "page": 139,
+              "column": "L"
+            }
+          ]
+        }
+      },
+      "images": [
+        {
+          "path": "frisoni-1910/genovese_italiano/guardia.1/1.png",
+          "page_image": "frisoni-1910/pagine/139.png",
+          "box": [
+            165,
+            395,
+            968,
+            550
+          ],
+          "sha256": "15ac2ff35c8bb061ebf4a2a897e66ac4b09c0f17ec7d693c207b179e5b4e5f83"
+        },
+        {
+          "path": "frisoni-1910/genovese_italiano/guardia.1/2.png",
+          "page_image": "frisoni-1910/pagine/139.png",
+          "box": [
+            367,
+            397,
+            653,
+            453
+          ],
+          "sha256": "f4b1b2299922d403ed5d451fbead4ff6cfc1b6ce6b843ad638d4b35508fb5be4"
+        },
+        {
+          "path": "frisoni-1910/genovese_italiano/guardia.1/3.png",
+          "page_image": "frisoni-1910/pagine/139.png",
+          "box": [
+            690,
+            397,
+            968,
+            453
+          ],
+          "sha256": "6885e0c4017c3c618418604a30fff4812823c62394e0ef35d53ff86923a04475"
+        },
+        {
+          "path": "frisoni-1910/genovese_italiano/guardia.1/4.png",
+          "page_image": "frisoni-1910/pagine/139.png",
+          "box": [
+            215,
+            445,
+            615,
+            500
+          ],
+          "sha256": "3f5e0cdf14e020143dbfe635598a4541d018aabcb29d37496657b8bf3982f467"
+        },
+        {
+          "path": "frisoni-1910/genovese_italiano/guardia.1/5.png",
+          "page_image": "frisoni-1910/pagine/139.png",
+          "box": [
+            665,
+            445,
+            968,
+            500
+          ],
+          "sha256": "c8be13027a15963dc85e7e99a66e7c8fa58b1b330b1502f090ca452cb009f73f"
+        },
+        {
+          "path": "frisoni-1910/genovese_italiano/guardia.1/6.png",
+          "page_image": "frisoni-1910/pagine/139.png",
+          "box": [
+            215,
+            492,
+            390,
+            549
+          ],
+          "sha256": "00924bd59ef09279f0b51c96bdcf4b0518be051443f9aa61a7e65416a3a7a3b4"
+        },
+        {
+          "path": "frisoni-1910/genovese_italiano/guardia.1/7.png",
+          "page_image": "frisoni-1910/pagine/139.png",
+          "box": [
+            395,
+            492,
+            968,
+            549
+          ],
+          "sha256": "0715bfd45bb2b907e03a416bd5a1d2bc02739a1a3961c753c6243dffc69f5e39"
+        }
+      ],
+      "image_count": 7
+    },
+    {
+      "document": "frisoni-1910",
+      "section": "genovese_italiano",
+      "entry_id": "guardia.1-",
+      "headwords": [
+        "Guardia"
+      ],
+      "lemma_index": 1,
+      "locations": {
+        "/source_locations": {
+          "page_range": [
+            139
+          ],
+          "column_range": [
+            "L"
+          ],
+          "images": [
+            {
+              "index": 1,
+              "page": 139,
+              "column": "L"
+            }
+          ]
+        },
+        "/content/frisoni/senses/0/0/source_locations": {
+          "page_range": [
+            139
+          ],
+          "column_range": [
+            "L"
+          ],
+          "images": [
+            {
+              "index": 2,
+              "page": 139,
+              "column": "L"
+            }
+          ]
+        },
+        "/content/frisoni/senses/1/0/source_locations": {
+          "page_range": [
+            139
+          ],
+          "column_range": [
+            "L"
+          ],
+          "images": [
+            {
+              "index": 3,
+              "page": 139,
+              "column": "L"
+            },
+            {
+              "index": 4,
+              "page": 139,
+              "column": "L"
+            }
+          ]
+        }
+      },
+      "images": [
+        {
+          "path": "frisoni-1910/genovese_italiano/guardia.1-/1.png",
+          "page_image": "frisoni-1910/pagine/139.png",
+          "box": [
+            165,
+            539,
+            968,
+            731
+          ],
+          "sha256": "03500381d06813bdfada6214cd77707e5a26c1bd8b16f700c3381f42da07158f"
+        },
+        {
+          "path": "frisoni-1910/genovese_italiano/guardia.1-/2.png",
+          "page_image": "frisoni-1910/pagine/139.png",
+          "box": [
+            355,
+            540,
+            840,
+            595
+          ],
+          "sha256": "e4914e3e0f3b3c2794926236a8df3d5b038cf545b8503d25b5cf069d9895b6c1"
+        },
+        {
+          "path": "frisoni-1910/genovese_italiano/guardia.1-/3.png",
+          "page_image": "frisoni-1910/pagine/139.png",
+          "box": [
+            855,
+            540,
+            968,
+            595
+          ],
+          "sha256": "7c5d853bfc43c43eb34402732f46c16775a00de55db456ea59886514907a3319"
+        },
+        {
+          "path": "frisoni-1910/genovese_italiano/guardia.1-/4.png",
+          "page_image": "frisoni-1910/pagine/139.png",
+          "box": [
+            215,
+            587,
+            968,
+            731
+          ],
+          "sha256": "619f9fe3c03cf94c28d10f0b6709f8f0ebba518407d5917fcf7e04cb3fb4b0dd"
+        }
+      ],
+      "image_count": 4
+    },
+    {
+      "document": "frisoni-1910",
+      "section": "genovese_italiano",
+      "entry_id": "abboccamento.1",
+      "headwords": [
+        "abboccamento"
+      ],
+      "lemma_index": 1,
+      "locations": {
+        "/source_locations": {
+          "page_range": [
+            4
+          ],
+          "column_range": [
+            "R"
+          ],
+          "images": [
+            {
+              "index": 1,
+              "page": 4,
+              "column": "R"
+            }
+          ]
+        },
+        "/content/frisoni/senses/0/0/source_locations": {
+          "page_range": [
+            4
+          ],
+          "column_range": [
+            "R"
+          ],
+          "images": [
+            {
+              "index": 2,
+              "page": 4,
+              "column": "R"
+            }
+          ]
+        }
+      },
+      "images": [
+        {
+          "path": "frisoni-1910/genovese_italiano/abboccamento.1/1.png",
+          "page_image": "frisoni-1910/pagine/4.png",
+          "box": [
+            1223,
+            699,
+            1962,
+            773
+          ],
+          "sha256": "99a5f13bcc8f275503e9cc89d9d975e9aa57b8a0e16c334ca31efa4e685a0a44"
+        },
+        {
+          "path": "frisoni-1910/genovese_italiano/abboccamento.1/2.png",
+          "page_image": "frisoni-1910/pagine/4.png",
+          "box": [
+            1533,
+            699,
+            1962,
+            773
+          ],
+          "sha256": "ece9cc9085109e90e98dc204dfd0f92268515a2989511bebba11908770bde2f2"
+        }
+      ],
+      "image_count": 2
+    },
+    {
+      "document": "frisoni-1910",
+      "section": "italiano_genovese",
+      "entry_id": "abboccamento.1",
+      "headwords": [
+        "abboccamento"
+      ],
+      "lemma_index": 1,
+      "locations": {
+        "/source_locations": {
+          "page_range": [
+            311
+          ],
+          "column_range": [
+            "R"
+          ],
+          "images": [
+            {
+              "index": 1,
+              "page": 311,
+              "column": "R"
+            }
+          ]
+        },
+        "/content/frisoni/senses/0/0/source_locations": {
+          "page_range": [
+            311
+          ],
+          "column_range": [
+            "R"
+          ],
+          "images": [
+            {
+              "index": 2,
+              "page": 311,
+              "column": "R"
+            }
+          ]
+        }
+      },
+      "images": [
+        {
+          "path": "frisoni-1910/italiano_genovese/abboccamento.1/1.png",
+          "page_image": "frisoni-1910/pagine/311.png",
+          "box": [
+            1001,
+            1503,
+            1754,
+            1581
+          ],
+          "sha256": "f7ee022a6b5834795e9c627ac9de424e0db2ee4d025780a6db6d36588f94853c"
+        },
+        {
+          "path": "frisoni-1910/italiano_genovese/abboccamento.1/2.png",
+          "page_image": "frisoni-1910/pagine/311.png",
+          "box": [
+            1298,
+            1503,
+            1754,
+            1581
+          ],
+          "sha256": "2cbc0d07d11e96d26b1d57b76720c73005c0aaa2e603a58f25cbcf939405575f"
+        }
+      ],
+      "image_count": 2
+    },
+    {
+      "document": "paganini-1857",
+      "section": "main_dictionary",
+      "entry_id": "cuxinha.1",
+      "headwords": [
+        "cuxinha"
+      ],
+      "lemma_index": 1,
+      "locations": {
+        "/source_locations": {
+          "page_range": [
+            5
+          ],
+          "column_range": [
+            "L"
+          ],
+          "images": [
+            {
+              "index": 1,
+              "page": 5,
+              "column": "L"
+            }
+          ]
+        },
+        "/content/paganini/senses/0/0/source_locations": {
+          "page_range": [
+            5
+          ],
+          "column_range": [
+            "L"
+          ],
+          "images": [
+            {
+              "index": 1,
+              "page": 5,
+              "column": "L"
+            }
+          ]
+        }
+      },
+      "images": [
+        {
+          "path": "paganini-1857/main_dictionary/cuxinha.1/1.png",
+          "page_image": "paganini-1857/pagine/5.png",
+          "box": [
+            164,
+            886,
+            933,
+            1171
+          ],
+          "sha256": "434c4678f41733d88531c47be22e5f5a1d23cfdd004b243fa3c6fdd6904eadc7"
+        }
+      ],
+      "thematic_section": "cucina_e_dispensa",
+      "image_count": 1
+    },
+    {
+      "document": "paganini-1857",
+      "section": "main_dictionary",
+      "entry_id": "fornelli.1",
+      "headwords": [
+        "fornelli"
+      ],
+      "lemma_index": 1,
+      "locations": {
+        "/source_locations": {
+          "page_range": [
+            6
+          ],
+          "column_range": [
+            "R"
+          ],
+          "images": [
+            {
+              "index": 1,
+              "page": 6,
+              "column": "R"
+            }
+          ]
+        },
+        "/content/paganini/senses/0/0/source_locations": {
+          "page_range": [
+            6
+          ],
+          "column_range": [
+            "R"
+          ],
+          "images": [
+            {
+              "index": 1,
+              "page": 6,
+              "column": "R"
+            }
+          ]
+        },
+        "/content/paganini/illustrations/0": {
+          "table": 1,
+          "number": 1,
+          "images": [
+            {
+              "index": 2,
+              "table": 1,
+              "number": 1
+            }
+          ]
+        }
+      },
+      "images": [
+        {
+          "path": "paganini-1857/main_dictionary/fornelli.1/1.png",
+          "page_image": "paganini-1857/pagine/6.png",
+          "box": [
+            1159,
+            312,
+            2006,
+            494
+          ],
+          "sha256": "578fbb5e47d89089b404c5c5ebc95fd329a3a36f43b0a298bab99bac2478b356"
+        },
+        {
+          "path": "paganini-1857/main_dictionary/fornelli.1/2.png",
+          "page_image": "paganini-1857/pagine/tavola-1.png",
+          "box": [
+            440,
+            830,
+            2008,
+            1565
+          ],
+          "sha256": "a239fd557c9f1cb0228c99659b065755f88c89002eac18e49cd9429307cdb761"
+        }
+      ],
+      "thematic_section": "cucina_e_dispensa",
+      "image_count": 2
+    },
+    {
+      "document": "paganini-1857",
+      "section": "main_dictionary",
+      "entry_id": "banderolla.1",
+      "headwords": [
+        "banderolla"
+      ],
+      "lemma_index": 1,
+      "locations": {
+        "/source_locations": {
+          "page_range": [
+            8
+          ],
+          "column_range": [
+            "R"
+          ],
+          "images": [
+            {
+              "index": 1,
+              "page": 8,
+              "column": "R"
+            }
+          ]
+        },
+        "/content/paganini/senses/0/0/source_locations": {
+          "page_range": [
+            8
+          ],
+          "column_range": [
+            "R"
+          ],
+          "images": [
+            {
+              "index": 1,
+              "page": 8,
+              "column": "R"
+            }
+          ]
+        },
+        "/content/paganini/illustrations/0": {
+          "table": 1,
+          "number": 17,
+          "images": [
+            {
+              "index": 2,
+              "table": 1,
+              "number": 17
+            }
+          ]
+        }
+      },
+      "images": [
+        {
+          "path": "paganini-1857/main_dictionary/banderolla.1/1.png",
+          "page_image": "paganini-1857/pagine/8.png",
+          "box": [
+            1150,
+            260,
+            2005,
+            405
+          ],
+          "sha256": "c2c41c965cca95dbf7a97c426872e75f7bb4f47a362ede9186c68a810b4d8bb4"
+        },
+        {
+          "path": "paganini-1857/main_dictionary/banderolla.1/2.png",
+          "page_image": "paganini-1857/pagine/tavola-1.png",
+          "box": [
+            592,
+            1050,
+            705,
+            1335
+          ],
+          "sha256": "732a9440a2a734b88a6b5ab84e9b442aed8ae4a3e137924140641ef69dee95d3"
+        }
+      ],
+      "thematic_section": "cucina_e_dispensa",
+      "image_count": 2
+    }
+  ]
+}
