@@ -10,6 +10,7 @@ import json
 import math
 from pathlib import Path
 import shutil
+import tempfile
 import unicodedata
 
 from PIL import Image, __version__ as pillow_version
@@ -46,21 +47,99 @@ def require(condition, message):
         raise ValueError(message)
 
 
-def prepared_books(catalog, scans, all_books):
+def prepared_books(catalog, scans, all_books, selected=None):
     require(catalog.get("format") == "liguriankb.dictionary-jsonl" and catalog.get("schema_version") == 1,
             "Unsupported dictionary export catalog")
     registrations = {}
     for entry in catalog["dictionaries"]:
         document = entry["document_id"]
-        require(document not in registrations, "Duplicate catalog document: " + document)
         require(document and document not in (".", "..") and not any(c in document for c in "/\\\0"),
                 "Invalid document id: " + document)
         require(Path(entry["file"]).name == entry["file"] and entry["file"].endswith(".jsonl")
                 and not any(c in entry["file"] for c in "\\\0"), "Invalid export filename")
-        registrations[document] = entry
+        require(all(other["file"] != entry["file"] and other["id"] != entry["id"]
+                    for group in registrations.values() for other in group), "Duplicate export registration")
+        group = registrations.setdefault(document, [])
+        require(not group or group[0]["content_key"] == entry["content_key"],
+                "A scan document cannot combine different content keys: " + document)
+        group.append(entry)
     wanted = set(scans) if all_books else set(PILOT)
     require(wanted <= set(registrations), "Prepared scans or pilot have no export registration")
-    return {document: entry for document, entry in registrations.items() if document in wanted}
+    if selected:
+        require(set(selected) <= wanted, "Selected document has no prepared scans")
+        wanted = set(selected)
+    return {document: group for document, group in registrations.items() if document in wanted}
+
+
+def preserve_books(previous, books, selected, manifest, previous_manifest, export_folder, read_input):
+    """Reuse checked completed books without reopening or rewriting their PNGs."""
+    require(previous.get("complete") is True and previous.get("dpi") == 300,
+            "A bounded build requires a complete existing output manifest")
+    retained = set(books) - set(selected)
+    require(retained <= set(previous["books"]), "Unselected prepared document has not been built")
+    require(set(previous["books"]) <= set(books), "Existing output contains an unregistered prepared document")
+    checks = {}
+    for document in sorted(retained):
+        registration = books[document]
+        old = previous["books"][document]
+        require(old["source"] == registration[0]["content_key"]
+                and old["entries"] == sum(e["entries"] for e in registration),
+                "Unselected document registration changed: " + document)
+        require(previous_manifest["books"][document] == manifest["books"][document],
+                "Unselected prepared scan registration changed: " + document)
+        mapping_path = export_folder / (document + ".images.jsonl")
+        require(digest(mapping_path) == old["mapping_sha256"],
+                "Unselected output mapping changed: " + document)
+        mappings = [json.loads(line) for line in mapping_path.read_bytes().splitlines()]
+        by_id = {row["source_id"]: row for row in mappings}
+        require(len(by_id) == len(mappings) == old["entries"], "Invalid retained mapping IDs: " + document)
+        entries, pins, frozen_pins = [], {}, {}
+        for entry in registration:
+            relative = "LigurianKB/exports/" + entry["file"]
+            raw = read_input(relative)
+            require(hashlib.sha256(raw).hexdigest() == entry["sha256"],
+                    "Unselected dictionary export bytes changed: " + relative)
+            rows = [json.loads(line) for line in raw.splitlines()]
+            require(len(rows) == entry["entries"] and all(set(row["content"]) == {old["source"]} for row in rows),
+                    "Retained export registration differs: " + relative)
+            entries.extend(rows)
+            pins[entry["file"]] = entry["sha256"]
+            frozen_pins[entry["file"]] = previous.get("retained_output_checks", {}).get(document, {}).get(
+                "frozen_export_sha256", {}).get(entry["file"], previous["inputs"].get(relative))
+            require(isinstance(frozen_pins[entry["file"]], str) and len(frozen_pins[entry["file"]]) == 64,
+                    "Missing original export pin for retained mapping: " + relative)
+        require(len({row["id"] for row in entries}) == len(entries) and {row["id"] for row in entries} == set(by_id),
+                "Canonical IDs changed in unselected document: " + document)
+        pointers, regions = 0, 0
+        for entry in entries:
+            mapping = by_id[entry["id"]]
+            require(mapping["document"] == document and mapping["section"] == entry["section"],
+                    "Retained mapping document/section differs: " + entry["id"])
+            locations = dict(locations_in(entry))
+            frozen = {pointer: value for pointer, value in mapping["locations"].items() if "/illustrations/" not in pointer}
+            require(locations.keys() == frozen.keys(), "Retained source-location pointers differ: " + entry["id"])
+            for pointer, location in locations.items():
+                prior = frozen[pointer]
+                require({key: value for key, value in location.items() if key != "image_coordinates"}
+                        == {key: value for key, value in prior.items() if key != "images"},
+                        "Retained printed source ranges differ: " + entry["id"] + pointer)
+                require(len(location["image_coordinates"]) == len(prior["images"]),
+                        "Retained source region count differs: " + entry["id"] + pointer)
+                pointers += 1
+                for region, image in zip(location["image_coordinates"], prior["images"]):
+                    page = manifest["books"][document]["pages"][str(region["page"])]
+                    box = pixel_box(region["rectangle"], page["frame"], (page["width"], page["height"]))
+                    require(list(box) == mapping["images"][image["index"] - 1]["box"]
+                            and {key: value for key, value in region.items() if key != "rectangle"}
+                            == {key: value for key, value in image.items() if key != "index"},
+                            "Retained crop geometry differs: " + entry["id"] + pointer)
+                    regions += 1
+        checks[document] = {"entries": len(entries), "source_location_pointers": pointers,
+                            "image_regions": regions, "current_export_sha256": pins,
+                            "frozen_export_sha256": frozen_pins,
+                            "mapping_sha256": old["mapping_sha256"],
+                            "compatibility": "Canonical IDs, source-location pointers, printed locators and pixel boxes match the frozen mapping; retained labels, image paths and PNG bytes are unchanged."}
+    return ({document: previous["books"][document] for document in retained}, checks)
 
 
 def atomic_json(path, value):
@@ -128,34 +207,117 @@ def self_check():
     assert pixel_box([0, 0, 1, 1], [.2, .3, 5.2, 6.3], (10, 10)) == (0, 0, 6, 7)
     assert list(locations_in({"errata_source_locations": {"0": {"image_coordinates": []}}}))[0][0] == "/errata_source_locations/0"
     catalog = {"format": "liguriankb.dictionary-jsonl", "schema_version": 1, "dictionaries": [
-        {"document_id": "pfb-1873", "content_key": "pfb", "file": "pfb.jsonl"},
-        {"document_id": "vpl-ac", "content_key": "vpl", "file": "vpl-ac.jsonl"}]}
+        {"id": "pfb", "document_id": "pfb-1873", "content_key": "pfb", "file": "pfb.jsonl"},
+        {"id": "vpl-ac", "document_id": "vpl-ac", "content_key": "vpl", "file": "vpl-ac.jsonl"}]}
     assert list(prepared_books(catalog, {"pfb-1873": {}}, True)) == ["pfb-1873"]
+    catalog["dictionaries"].extend({"id": "penzig-" + direction, "document_id": "penzig-1897",
+                                   "content_key": "penzig", "file": direction + ".jsonl"}
+                                  for direction in ("species", "ligurian"))
+    grouped = prepared_books(catalog, {"pfb-1873": {}, "penzig-1897": {}}, True, ["penzig-1897"])
+    assert list(grouped) == ["penzig-1897"] and len(grouped["penzig-1897"]) == 2
+    duplicate = {**catalog, "dictionaries": catalog["dictionaries"] + [catalog["dictionaries"][-1]]}
+    try:
+        prepared_books(duplicate, {"penzig-1897": {}}, True)
+    except ValueError:
+        pass
+    else:
+        raise AssertionError("Duplicate export registration was accepted")
+    conflicting = json.loads(json.dumps(catalog))
+    conflicting["dictionaries"][-1]["content_key"] = "different"
+    try:
+        prepared_books(conflicting, {"penzig-1897": {}}, True)
+    except ValueError:
+        pass
+    else:
+        raise AssertionError("Different content keys shared one scan document")
+    # A spelling edit can reuse a frozen image path; a changed source region cannot.
+    loc = {"page_range": [1], "column_range": ["L"], "image_coordinates": [
+        {"page": 1, "column": "L", "rectangle": [.1, .2, .9, .3]}]}
+    entry = {"id": "stable", "section": "main", "content": {"example": {"lemmas": ["new spelling"]}},
+             "source_locations": loc}
+    mapping = {"source_id": "stable", "document": "example", "section": "main", "entry_id": "old spelling.1",
+               "locations": {"/source_locations": {"page_range": [1], "column_range": ["L"],
+                             "images": [{"index": 1, "page": 1, "column": "L"}]}},
+               "images": [{"box": [1, 2, 9, 3]}]}
+    scan = {"books": {"example": {"pages": {"1": {"frame": [0, 0, 10, 10], "width": 10, "height": 10}}}}}
+    with tempfile.TemporaryDirectory() as directory:
+        folder = Path(directory)
+        path = folder / "example.images.jsonl"
+        path.write_text(json.dumps(mapping) + "\n")
+        previous = {"complete": True, "dpi": 300, "inputs": {"LigurianKB/exports/example.jsonl": "0" * 64}, "books": {"example": {
+            "source": "example", "entries": 1, "mapping_sha256": digest(path)}}}
+        for problem in (None, "rectangle", "pointer", "id"):
+            current = json.loads(json.dumps(entry))
+            if problem == "rectangle": current["source_locations"]["image_coordinates"][0]["rectangle"][2] = .8
+            if problem == "pointer": current["extra_source_locations"] = current.pop("source_locations")
+            if problem == "id": current["id"] = "different"
+            raw = (json.dumps(current) + "\n").encode()
+            registrations = {"example": [{"content_key": "example", "file": "example.jsonl", "entries": 1,
+                                           "sha256": hashlib.sha256(raw).hexdigest()}]}
+            try:
+                retained, checked = preserve_books(previous, registrations, {}, scan, scan, folder, lambda _: raw)
+            except ValueError:
+                assert problem is not None, "A compatible spelling edit was rejected"
+            else:
+                assert problem is None, "An incompatible source change reused frozen crops"
+                assert retained == previous["books"] and checked["example"]["image_regions"] == 1
+                assert checked["example"]["frozen_export_sha256"]["example.jsonl"] == "0" * 64
+                rerun = {**previous, "inputs": {"LigurianKB/exports/example.jsonl": "1" * 64}, "retained_output_checks": checked}
+                _, rechecked = preserve_books(rerun, registrations, {}, scan, scan, folder, lambda _: raw)
+                assert rechecked["example"]["frozen_export_sha256"]["example.jsonl"] == "0" * 64
 
 
 def main():
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("--all", action="store_true", help="Prepare every cataloged entry and retained page with prepared scans")
+    parser.add_argument("--book", action="append", help="With --all, rebuild only this prepared document; retain checked completed books (repeatable)")
+    parser.add_argument("--scans", type=Path, default=SCANS, help="Prepared LigurianScans checkout")
+    parser.add_argument("--exports", type=Path, default=ROOT.parent / "LigurianKB/exports", help="Public LigurianKB export directory")
+    parser.add_argument("--previous-scans-manifest", type=Path,
+                        help="Previous pinned scan manifest, required for a bounded build after scan registrations change")
     args = parser.parse_args()
+    if args.book and not args.all:
+        parser.error("--book requires --all")
     self_check()
     inputs = {}
     preparation = {"complete": False, "dpi": 300, "inputs": inputs, "books": {}}
     staged_mappings = []
     export_folder = ROOT / "exports"
     def read_input(relative):
-        raw = (ROOT.parent / relative).read_bytes()
+        prefix, child = relative.split("/", 1)
+        source = args.scans / child if prefix == "LigurianScans" else args.exports.parent / child
+        raw = source.read_bytes()
         inputs[relative] = hashlib.sha256(raw).hexdigest()
         return raw
 
     manifest = json.loads(read_input("LigurianScans/manifest.json"))
     assert manifest["complete"] is True and manifest["dpi"] == 300
     export_catalog = json.loads(read_input("LigurianKB/exports/manifest.json"))
-    books = prepared_books(export_catalog, manifest["books"], args.all)
+    all_books = prepared_books(export_catalog, manifest["books"], args.all)
+    books = prepared_books(export_catalog, manifest["books"], args.all, args.book)
     catalog = json.loads(read_input("LigurianKB/processing/paganini/illustrations.json"))
     assets = json.loads(read_input("LigurianKB/processing/paganini/scan-assets.json"))
     assert catalog["complete"] is True and assets["complete"] is True and assets["dpi"] == 300
     assert catalog["scan_assets_sha256"] == inputs["LigurianKB/processing/paganini/scan-assets.json"]
     tables = {table["table"]: table for table in catalog["tables"]}
+    if args.book:
+        previous = json.loads((export_folder / "manifest.json").read_bytes())
+        previous_pin = previous["inputs"]["LigurianScans/manifest.json"]
+        if previous_pin == inputs["LigurianScans/manifest.json"]:
+            previous_manifest = manifest
+        else:
+            require(args.previous_scans_manifest is not None,
+                    "Supply the previously pinned --previous-scans-manifest to retain existing prepared books")
+            previous_bytes = args.previous_scans_manifest.read_bytes()
+            require(hashlib.sha256(previous_bytes).hexdigest() == previous_pin,
+                    "Previous scan manifest does not match the completed output snapshot")
+            previous_manifest = json.loads(previous_bytes)
+        preparation["books"], preparation["retained_output_checks"] = preserve_books(
+            previous, all_books, books, manifest, previous_manifest, export_folder, read_input)
+        if "paganini-1857" not in books:
+            for relative in ("LigurianKB/processing/paganini/illustrations.json", "LigurianKB/processing/paganini/scan-assets.json"):
+                require(inputs[relative] == previous["inputs"].get(relative),
+                        "Unselected Paganini illustration source changed: " + relative)
     if args.all:
         export_folder.mkdir(exist_ok=True)
         atomic_json(export_folder / "manifest.json", preparation)
@@ -165,7 +327,7 @@ def main():
 
     @lru_cache(maxsize=3)
     def raster(sha, width, height):
-        source_path = SCANS / "public/pages" / sha[:2] / (sha + ".png")
+        source_path = args.scans / "public/pages" / sha[:2] / (sha + ".png")
         assert digest(source_path) == sha
         with Image.open(source_path) as opened:
             opened.load()
@@ -174,7 +336,7 @@ def main():
 
     def page_image(document, record, label, load=True):
         sha = record["sha256"]
-        source_path = SCANS / "public/pages" / sha[:2] / (sha + ".png")
+        source_path = args.scans / "public/pages" / sha[:2] / (sha + ".png")
         require(digest(source_path) == sha, "Prepared source PNG hash differs: " + sha)
         relative = Path(document) / "pagine" / (str(label) + ".png")
         destination = ROOT / relative
@@ -190,17 +352,21 @@ def main():
         image = raster(sha, record["width"], record["height"]) if load else None
         return image, relative.as_posix()
 
-    for document, registration in books.items():
-        source = registration["content_key"]
+    for document, registrations in books.items():
+        source = registrations[0]["content_key"]
         selectors = PILOT.get(document, (None, []))[1]
-        export_path = "LigurianKB/exports/" + registration["file"]
-        export_bytes = read_input(export_path)
-        require(inputs[export_path] == registration["sha256"], "Export catalog SHA-256 differs: " + export_path)
-        if source == "paganini":
-            require(catalog["public_dictionary_sha256"] == inputs[export_path], "Paganini public catalog/export snapshot differs")
-        entries = [json.loads(line) for line in export_bytes.splitlines() if line.strip()]
-        require(len(entries) == registration["entries"], "Export catalog entry count differs: " + export_path)
-        require(all(set(entry["content"]) == {source} for entry in entries), "Export content key differs: " + export_path)
+        entries = []
+        for registration in registrations:
+            export_path = "LigurianKB/exports/" + registration["file"]
+            export_bytes = read_input(export_path)
+            require(inputs[export_path] == registration["sha256"], "Export catalog SHA-256 differs: " + export_path)
+            if source == "paganini":
+                require(catalog["public_dictionary_sha256"] == inputs[export_path], "Paganini public catalog/export snapshot differs")
+            rows = [json.loads(line) for line in export_bytes.splitlines() if line.strip()]
+            require(len(rows) == registration["entries"], "Export catalog entry count differs: " + export_path)
+            require(all(set(entry["content"]) == {source} for entry in rows), "Export content key differs: " + export_path)
+            entries.extend(rows)
+        require(len({entry["id"] for entry in entries}) == len(entries), "Duplicate source ID within scan document: " + document)
         identifiers = entry_ids(entries, source)
         by_key = {entry_key(entry, source): (entry, identifier) for entry, identifier in zip(entries, identifiers)}
         assert len(by_key) == len(entries)
@@ -221,6 +387,8 @@ def main():
                           "locations": {}, "images": []}
                 if "section" in content:
                     result["thematic_section"] = content["section"]
+                if source == "penzig":
+                    result["direction"] = content["direction"]
                 seen = {}
 
                 def save_crop(image, record, page_path, box):
